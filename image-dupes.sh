@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Author : intbonus@seanmaddison.uk
+# Author : flashmaddison@seanmaddison.uk
 # Copyright (c) Sean Maddison
 # Notes:
 # 
