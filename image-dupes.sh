@@ -1,20 +1,25 @@
 #!/bin/bash
 
-# Author : flashmaddison@seanmaddison.uk
+# Author : intbonus@seanmaddison.uk
 # Copyright (c) Sean Maddison
 # Notes:
 # 
 # - My first attempt at writing a bash script!
 
-# Set deletefiles to true below to remove duplicates
-
-# allow a working directory to be passed in
+# Notes
+# -----
+# Set deletefiles to true below to remove duplicates when found, set to false just to log
+# Default image duplicate threshold is 90%, change dupeThreshold below to alter this
 
 # TODO
 # * Parameterise prioritise largest file
+# * log file stuff
 
 filename=image_dupes_found.txt
-deletefiles=false
+deletefiles=true
+LOG_FILE=/var/log/image-dupes.sh.log
+dupeThreshold=75
+
 echo -e "! deletefiles is set to $deletefiles"
 
 
@@ -34,13 +39,14 @@ workingFile=$workingDir/$filename
 
 # Write findimagedupes output to a file so we can work through it
 echo Writing findimagedupes output to $workingFile
-findimagedupes $workingDir > $workingFile
+findimagedupes -t $dupeThreshold $workingDir > $workingFile
 
 # loop through each line-item in the file
 
 fileLines=$(cat $workingFile)
 lineCount=1
-
+dupesFound=0
+deletedFiles=0
 # Set newlines to be terminator for the loop, not spaces
 IFS=$'\n'
 
@@ -54,6 +60,7 @@ do
   IFS=' ' read -ra thisDuplicate <<< "$line"
   for thisEntry in "${thisDuplicate[@]}"
   do
+    dupesFound=$((dupesFound+1))
     thisSize=$(stat --printf="%s" $thisEntry)
     echo - single found item is $thisEntry with file size of $thisSize bytes
     # find largest file
@@ -62,6 +69,7 @@ do
     fi
   done
   echo - largest file is $fileToKeep, this file will be kept when deleting duplicates
+  dupesFound=$((dupesFound-1))
   echo ---
 
   # now find the files to delete
@@ -75,9 +83,11 @@ do
       if [[ "$deletefiles" == "true" ]]; then
         echo -e " - deleting duplicates"
         rm -v $thisEntry
+        deletedFiles=$((deletedFiles+1))
       fi
     fi
   done
   echo -----
-
 done
+echo -e " - $dupesFound duplicates found, not including largest original file"
+echo -e " - $deletedFiles files deleted."
