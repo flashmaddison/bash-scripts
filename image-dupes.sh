@@ -16,8 +16,10 @@
 # * log file stuff
 
 filename=image_dupes_found.txt
-deletefiles=false
+deletefiles=true
 LOG_FILE=/var/log/image-dupes.sh.log
+dupeThreshold=90
+
 echo -e "! deletefiles is set to $deletefiles"
 
 
