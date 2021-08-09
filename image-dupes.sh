@@ -39,7 +39,7 @@ workingFile=$workingDir/$filename
 
 # Write findimagedupes output to a file so we can work through it
 echo Writing findimagedupes output to $workingFile
-findimagedupes -t $dupeThreshold $workingDir > $workingFile
+findimagedupes --threshold=$dupeThreshold $workingDir > $workingFile
 
 # loop through each line-item in the file
 
