@@ -16,7 +16,7 @@
 # * log file stuff
 
 filename=image_dupes_found.txt
-deletefiles=true
+deletefiles=false
 LOG_FILE=/var/log/image-dupes.sh.log
 dupeThreshold=90%
 
